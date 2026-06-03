@@ -1619,7 +1619,7 @@
       // 3. Impacto del proyecto social
       const ssIdx=getIdx('vczcIKTlOHtM19vvuHU4');
       const ssArr=getColData(rows,ssIdx);
-      const noSocial=ssArr.filter(v=>{const l=norm(v);return l.includes('no, lo acabo')||l.includes('no lo acabo')||l.includes('acabo de conocer')||l==='no'||l.startsWith('no ');}).length;
+      const noSocial=ssArr.filter(v=>{const l=norm(v);return l.includes('no sabia');}).length;
       const pSocial=ssArr.length>0?pct(noSocial,ssArr.length):0;
       insights.push({icon:'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',title:'Oportunidad de storytelling social',body:`El <strong>${pSocial}% desconocía que La Fageda es un proyecto social</strong> que da empleo a personas con discapacidad o en riesgo de exclusión. Existe un margen importante para reforzar el componente de impacto social en la comunicación: este atributo refuerza la diferenciación frente a marcas genéricas y puede convertirse en palanca emocional de compra.`});
 
