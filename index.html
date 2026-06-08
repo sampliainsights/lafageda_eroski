@@ -674,6 +674,7 @@
     const GVIZ_URL    = `https://docs.google.com/spreadsheets/d/e/${SHEET_KEY}/gviz/tq?gid=${SHEET_GID}`;
     const PUBHTML_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_KEY}/pubhtml?gid=${SHEET_GID}&single=true`;
     const BENCH_SCORE = 7.5;
+    const BENCH_SABOR = 8.2;
 
     let allRows=[], allHeaders=[], charts={}, COL={};
 
@@ -1596,7 +1597,7 @@
       const tArr=getColData(rows,tIdx).map(v=>parseFloat(v)).filter(v=>!isNaN(v)&&v>=1&&v<=10);
       const tAvg=tArr.length?tArr.reduce((a,b)=>a+b,0)/tArr.length:0;
       document.getElementById('kpiSabor').textContent=tArr.length?tAvg.toFixed(1):'—';
-      document.getElementById('kpiSaborBench').innerHTML=tArr.length?benchTag(tAvg,BENCH_SCORE):'';
+      document.getElementById('kpiSaborBench').innerHTML=tArr.length?benchTag(tAvg,BENCH_SABOR):'';
     }
 
     // ── RENDER INSIGHTS (4 business insights) ──
