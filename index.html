@@ -714,6 +714,7 @@
       { col:'tvY3GCfZnahpBWBKAjNE', title:'Valoración de sabor',
         sub:'¿Y qué te ha parecido el sabor del producto?',
         type:'score', pairEnd:true,
+        benchmark:8.2,
         colorMap:{'5':'#D1D5DB','6':'#D1D5DB'} },
 
       // Q8 + Q9 pair: purchase intention (before/after price)
@@ -731,7 +732,7 @@
         },
         t2b:['Seguro que sí','Probablemente sí'] },
       { col:'s2VwEzvcVztm88tOxsoz', title:'Intención de compra con precio',
-        sub:'¿Y lo comprarías sabiendo que el precio del pack de 4 uds es de 1,99€ (yogur natural y sabores), 2,95€ (yogur griego natural), 2,35€ (flan de vainilla) y 2,29€ (sin lactosa)?',
+        sub:'¿Y lo comprarías sabiendo que el precio del pack de 4 uds es de 1,99€ (yogur natural y sabores), 2,95€ (yogur griego natural) y 2,29€ (sin lactosa)?',
         type:'bar', pairEnd:true, skipDynamic:true,
         fixedOrder:['Seguro que sí','Probablemente sí','Tal vez','Probablemente no','Seguro que no'],
         colorMap:{
@@ -753,6 +754,9 @@
         sub:'¿Recomendarías La Fageda a amigos y familiares? Recomienda del 1 al 10',
         type:'nps', section:'recommend' },
     ];
+
+    // Products hidden from all charts and filters
+    const HIDDEN_PRODUCTS = new Set(['flan de vainilla']);
 
     // ── HELPERS ──
     function redGradientShades(n){const sR=194,sG=29,sB=3,eR=255,eG=183,eB=135;return Array.from({length:n},(_,i)=>{const t=n>1?i/(n-1):0;return`rgb(${Math.round(sR+(eR-sR)*t)},${Math.round(sG+(eG-sG)*t)},${Math.round(sB+(eB-sB)*t)})`;});}
@@ -932,7 +936,8 @@
       ];
       const badgesHTML=scoreBands.map(b=>{const cnt=b.range.reduce((s,v)=>s+(freq[v]||0),0);const p=pct(cnt,values.length);return`<div class="score-badge" style="background:${b.color}18;border-color:${b.color}44;color:${b.color}"><span class="score-badge-dot" style="background:${b.color}"></span>${b.label}&nbsp;<strong>${p}%</strong></div>`;}).join('');
       const pillSlot=document.getElementById(container.id+'_pill');
-      if(pillSlot)pillSlot.innerHTML=`<div class="score-avg-pill"><span class="score-avg-label">Puntuación media</span><span class="score-avg-val">${avg.toFixed(1)}</span>${benchTag(avg,BENCH_SCORE)}</div>`;
+      const bench=q.benchmark!==undefined?q.benchmark:BENCH_SCORE;
+      if(pillSlot)pillSlot.innerHTML=`<div class="score-avg-pill"><span class="score-avg-label">Puntuación media</span><span class="score-avg-val">${avg.toFixed(1)}</span>${benchTag(avg,bench)}</div>`;
       container.innerHTML=`<div class="score-summary"><div class="chart-wrap h160"><canvas id="${chartId}"></canvas></div></div><div class="score-badges">${badgesHTML}</div>`;
       const labels=['1','2','3','4','5','6','7','8','9','10'];
       const data=labels.map(l=>freq[parseInt(l)]||0);
@@ -1319,7 +1324,7 @@
       arr.forEach(item=>{
         item.split(';').forEach(p=>{
           const clean=p.trim();
-          if(clean)products.add(clean);
+          if(clean&&!HIDDEN_PRODUCTS.has(norm(clean)))products.add(clean);
         });
       });
       const prodList=Array.from(products).sort();
@@ -1498,7 +1503,7 @@
           renderNPS(el,arr);
         } else if(q.type==='treemap'){
           const arr=q.multi?getColDataMulti(rows,idx):getColData(rows,idx);
-          const counts=countSingle(arr);const entries=sortedEntries(counts,14);
+          const counts=countSingle(arr);const entries=sortedEntries(counts,14).filter(e=>!HIDDEN_PRODUCTS.has(norm(e[0])));
           if(!entries.length){const el=document.getElementById(chartId);if(el)el.parentElement.innerHTML='<div class="no-data">Sin datos disponibles</div>';return;}
           const colors=q.colorMap?entries.map(e=>q.colorMap[e[0]]||'#9CA3AF'):entries.map((_,ci)=>VARIETY_COLORS[ci%VARIETY_COLORS.length]);
           const el=document.getElementById(chartId);if(!el)return;
@@ -1656,7 +1661,7 @@
         if(prod){
           prod.split(';').forEach(p=>{
             const clean=p.trim();
-            if(clean)products.add(clean);
+            if(clean&&!HIDDEN_PRODUCTS.has(norm(clean)))products.add(clean);
           });
         }
       });
